@@ -26,3 +26,5 @@ print(data.head())
 print(data.score.value_counts())
 
 
+
+

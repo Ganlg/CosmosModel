@@ -4,6 +4,7 @@ import numpy as np
 from keras.preprocessing.sequence import pad_sequences
 from keras.models import Sequential
 from keras.layers import Embedding, LSTM, Dense, Activation
+from keras.models import model_from_json
 
 from twtitter_char_dict import Corpus
 
@@ -61,3 +62,20 @@ model.compile(loss='binary_crossentropy',
 print('Train...')
 model.fit(X_Train, Y_Train, batch_size=32, nb_epoch=15, verbose=2)
 
+
+# serialize model to JSON
+model_json = model.to_json()
+with open("model.json", "w") as json_file:
+    json_file.write(model_json)
+
+# load json and create model
+json_file = open('model.json', 'r')
+loaded_model_json = json_file.read()
+json_file.close()
+loaded_model = model_from_json(loaded_model_json)
+
+
+# evaluate loaded model on test data
+loaded_model.compile(loss='binary_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
+# score = loaded_model.evaluate(X, Y, verbose=0)
+# print("%s: %.2f%%" % (loaded_model.metrics_names[1], score[1] * 100)
